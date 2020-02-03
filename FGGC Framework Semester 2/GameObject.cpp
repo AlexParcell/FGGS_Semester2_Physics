@@ -25,9 +25,6 @@ void GameObject::Update(float t)
 
 	XMStoreFloat4x4(&_world, scale * rotation * translation);
 
-	_debugger->PrintLog("Hi!");
-	_debugger->PrintLog(1337);
-
 	if (_parent != nullptr)
 	{
 		XMStoreFloat4x4(&_world, this->GetWorldMatrix() * _parent->GetWorldMatrix());
