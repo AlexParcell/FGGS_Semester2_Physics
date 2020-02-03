@@ -23,6 +23,11 @@ void GameObject::Update(float t)
 	XMMATRIX rotation = XMMatrixRotationX(_rotation.X) * XMMatrixRotationY(_rotation.Y) * XMMatrixRotationZ(_rotation.Z);
 	XMMATRIX translation = XMMatrixTranslation(_position.X, _position.Y, _position.Z);
 
+	if (_type.find("Cube") != string::npos)
+	{
+		_debugger->PrintLog("Cuuuuuuube");
+	}
+
 	XMStoreFloat4x4(&_world, scale * rotation * translation);
 
 	if (_parent != nullptr)
