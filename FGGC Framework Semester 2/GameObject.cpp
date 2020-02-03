@@ -8,10 +8,12 @@ GameObject::GameObject(string type, Geometry geometry, Material material) : _geo
 	_scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
 	_textureRV = nullptr;
+	_debugger = new Debugger();
 }
 
 GameObject::~GameObject()
 {
+	delete _debugger;
 }
 
 void GameObject::Update(float t)
@@ -22,6 +24,9 @@ void GameObject::Update(float t)
 	XMMATRIX translation = XMMatrixTranslation(_position.x, _position.y, _position.z);
 
 	XMStoreFloat4x4(&_world, scale * rotation * translation);
+
+	_debugger->PrintLog("Hi!");
+	_debugger->PrintLog(1337);
 
 	if (_parent != nullptr)
 	{

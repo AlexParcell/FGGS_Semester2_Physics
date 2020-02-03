@@ -4,6 +4,8 @@
 #include <d3d11_1.h>
 #include <string>
 
+#include "Debugger.h"
+
 using namespace DirectX;
 using namespace std;
 
@@ -79,5 +81,7 @@ private:
 	ID3D11ShaderResourceView * _textureRV;
 
 	GameObject * _parent;
+
+	Debugger* _debugger;
 };
 

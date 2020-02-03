@@ -14,8 +14,9 @@
       <FileName>Application.h</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
-      <Field Name="_camera" />
       <Field Name="basicLight" />
+      <Field Name="_camera" />
+      <Field Name="_gameObjects" />
     </ShowAsAssociation>
   </Class>
   <Class Name="GameObject">
@@ -28,6 +29,13 @@
       <Field Name="_geometry" />
       <Field Name="_material" />
     </ShowAsAssociation>
+  </Class>
+  <Class Name="std::vector&lt;_Ty, _Alloc&gt;" Collapsed="true">
+    <Position X="5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AWAEk4EqCrBsCEBAAOMIIAAyAAUEYBIghQkwgkAFU0o=</HashCode>
+      <FileName>C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.22.27905\include\vector</FileName>
+    </TypeIdentifier>
   </Class>
   <Struct Name="SimpleVertex">
     <Position X="11" Y="5.75" Width="1.5" />
