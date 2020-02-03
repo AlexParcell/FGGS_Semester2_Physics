@@ -143,19 +143,19 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 	noSpecMaterial.specularPower = 0.0f;
 	
 	GameObject * gameObject = new GameObject("Floor", planeGeometry, noSpecMaterial);
-	gameObject->SetPosition(0.0f, 0.0f, 0.0f);
-	gameObject->SetScale(15.0f, 15.0f, 15.0f);
-	gameObject->SetRotation(XMConvertToRadians(90.0f), 0.0f, 0.0f);
-	gameObject->SetTextureRV(_pGroundTextureRV);
+	gameObject->GetTransform()->SetPosition(0.0f, 0.0f, 0.0f);
+	gameObject->GetTransform()->SetScale(15.0f, 15.0f, 15.0f);
+	gameObject->GetTransform()->SetRotation(XMConvertToRadians(90.0f), 0.0f, 0.0f);
+	gameObject->GetAppearance()->SetTextureRV(_pGroundTextureRV);
 
 	_gameObjects.push_back(gameObject);
 
 	for (auto i = 0; i < NUMBER_OF_CUBES; i++)
 	{
 		gameObject = new GameObject("Cube " + i, cubeGeometry, shinyMaterial);
-		gameObject->SetScale(0.5f, 0.5f, 0.5f);
-		gameObject->SetPosition(-4.0f + (i * 2.0f), 0.5f, 10.0f);
-		gameObject->SetTextureRV(_pTextureRV);
+		gameObject->GetTransform()->SetScale(0.5f, 0.5f, 0.5f);
+		gameObject->GetTransform()->SetPosition(-4.0f + (i * 2.0f), 0.5f, 10.0f);
+		gameObject->GetAppearance()->SetTextureRV(_pTextureRV);
 
 		_gameObjects.push_back(gameObject);
 	}
@@ -649,15 +649,15 @@ void Application::Cleanup()
 
 void Application::moveForward(int objectNumber)
 {
-	Vector position = _gameObjects[objectNumber]->GetPosition();
+	Vector position = _gameObjects[objectNumber]->GetTransform()->GetPosition();
 	position.Z -= 0.1f;
-	_gameObjects[objectNumber]->SetPosition(position);
+	_gameObjects[objectNumber]->GetTransform()->SetPosition(position);
 }
 
 void Application::Update()
 {
     // Update our time
-    static float timeSinceStart = 0.0f;
+    static float deltaTime = 0.0f;
     static DWORD dwTimeStart = 0;
 
     DWORD dwTimeCur = GetTickCount();
@@ -665,7 +665,13 @@ void Application::Update()
     if (dwTimeStart == 0)
         dwTimeStart = dwTimeCur;
 
-	timeSinceStart = (dwTimeCur - dwTimeStart) / 1000.0f;
+	deltaTime = (dwTimeCur - dwTimeStart) / 1000.0f;
+	const float FPS_60 = 1.0f / 60.0f;
+
+	if (deltaTime < FPS_60)
+	{
+		return;
+	}
 
 	// Move gameobject
 	if (GetAsyncKeyState('1'))
@@ -689,8 +695,10 @@ void Application::Update()
 	// Update objects
 	for (auto gameObject : _gameObjects)
 	{
-		gameObject->Update(timeSinceStart);
+		gameObject->Update(deltaTime);
 	}
+
+	deltaTime -= FPS_60;
 }
 
 void Application::Draw()
@@ -734,7 +742,7 @@ void Application::Draw()
 	for (auto gameObject : _gameObjects)
 	{
 		// Get render material
-		Material material = gameObject->GetMaterial();
+		Material material = gameObject->GetAppearance()->GetMaterial();
 
 		// Copy material to shader
 		cb.surface.AmbientMtrl = material.ambient;
@@ -745,9 +753,9 @@ void Application::Draw()
 		cb.World = XMMatrixTranspose(gameObject->GetWorldMatrix());
 
 		// Set texture
-		if (gameObject->HasTexture())
+		if (gameObject->GetAppearance()->HasTexture())
 		{
-			ID3D11ShaderResourceView * textureRV = gameObject->GetTextureRV();
+			ID3D11ShaderResourceView * textureRV = gameObject->GetAppearance()->GetTextureRV();
 			_pImmediateContext->PSSetShaderResources(0, 1, &textureRV);
 			cb.HasTexture = 1.0f;
 		}
