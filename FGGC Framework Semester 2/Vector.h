@@ -9,7 +9,14 @@ using namespace DirectX;
 class Vector
 {
 public:
-	float X, Y, Z = 0.0f;
+	float X, Y, Z;
+
+	Vector()
+	{
+		X = 0.0f;
+		Y = 0.0f;
+		Z = 0.0f;
+	}
 
 	Vector(float x, float y, float z)
 	{
@@ -23,6 +30,13 @@ public:
 		X = OtherVector.X;
 		Y = OtherVector.Y;
 		Z = OtherVector.Z;
+	}
+
+	Vector(XMFLOAT3 OtherVector)
+	{
+		X = OtherVector.x;
+		Y = OtherVector.y;
+		Z = OtherVector.z;
 	}
 
 	~Vector()

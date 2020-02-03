@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "Vector.h"
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -648,8 +649,8 @@ void Application::Cleanup()
 
 void Application::moveForward(int objectNumber)
 {
-	XMFLOAT3 position = _gameObjects[objectNumber]->GetPosition();
-	position.z -= 0.1f;
+	Vector position = _gameObjects[objectNumber]->GetPosition();
+	position.Z -= 0.1f;
 	_gameObjects[objectNumber]->SetPosition(position);
 }
 
