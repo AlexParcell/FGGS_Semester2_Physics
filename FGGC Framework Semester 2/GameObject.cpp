@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "ParticleModel.h"
 
 GameObject::GameObject(string type, Geometry geometry, Material material) : _type(type)
 {
@@ -13,6 +14,8 @@ GameObject::GameObject(string type, Geometry geometry, Material material) : _typ
 	_appearance->_material = material;
 	_appearance->_textureRV = nullptr;
 	_debugger = new Debugger();
+
+	_particleModel = new ParticleModel(this);
 }
 
 GameObject::~GameObject()
