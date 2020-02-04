@@ -37,6 +37,8 @@ void GameObject::Update(float t)
 		_debugger->PrintLog("Cuuuuuuube");
 	}
 
+	_particleModel->Update(t);
+
 	XMStoreFloat4x4(&_world, scale * rotation * translation);
 
 	if (_parent != nullptr)

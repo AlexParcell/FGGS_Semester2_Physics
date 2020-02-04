@@ -25,6 +25,7 @@ public:
 
 	Transform* GetTransform() { return _transform; }
 	Appearance* GetAppearance() { return _appearance; }
+	ParticleModel* GetParticleModel() { return _particleModel; }
 
 	void SetParent(GameObject * parent) { _parent = parent; }
 

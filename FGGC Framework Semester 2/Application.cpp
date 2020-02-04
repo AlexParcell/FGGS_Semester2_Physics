@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "Vector.h"
+#include "ParticleModel.h"
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -673,10 +674,21 @@ void Application::Update()
 		return;
 	}
 
+	static bool Active = false;
+
 	// Move gameobject
-	if (GetAsyncKeyState('1'))
+	if (GetAsyncKeyState('1') & 0x8000)
 	{
-		moveForward(1);
+		GameObject* object = _gameObjects[1];
+		if (Active)
+		{
+			object->GetParticleModel()->SetVelocity(Vector(1, 0, 0));
+		}
+		else
+		{
+			object->GetParticleModel()->SetVelocity(Vector(0, 0, 0));
+		}
+		Active = !Active;
 	}
 
 	// Update camera
