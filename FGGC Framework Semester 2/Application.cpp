@@ -661,18 +661,11 @@ void Application::Update()
     static float deltaTime = 0.0f;
     static DWORD dwTimeStart = 0;
 
-    DWORD dwTimeCur = GetTickCount();
-
-    if (dwTimeStart == 0)
-        dwTimeStart = dwTimeCur;
+    DWORD dwTimeCur = GetTickCount64();
 
 	deltaTime = (dwTimeCur - dwTimeStart) / 1000.0f;
-	const float FPS_60 = 1.0f / 60.0f;
 
-	if (deltaTime < FPS_60)
-	{
-		return;
-	}
+	dwTimeStart = dwTimeCur;
 
 	static bool Active = false;
 
@@ -709,8 +702,6 @@ void Application::Update()
 	{
 		gameObject->Update(deltaTime);
 	}
-
-	deltaTime -= FPS_60;
 }
 
 void Application::Draw()
