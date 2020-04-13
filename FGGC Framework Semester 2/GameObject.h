@@ -3,6 +3,9 @@
 #include <directxmath.h>
 #include <d3d11_1.h>
 #include <string>
+#include <vector>
+
+using namespace std;
 
 #include "Debugger.h"
 #include "Appearance.h"
@@ -31,6 +34,9 @@ public:
 
 	void SetParent(GameObject * parent) { _parent = parent; }
 
+	void SetGameObjects(vector<GameObject*> v) { gameObjects = v; }
+	vector<GameObject*> GetGameObjects() { return gameObjects; }
+
 	void Update(float t);
 	void Draw(ID3D11DeviceContext * pImmediateContext);
 
@@ -42,6 +48,7 @@ private:
 	Vector BoundingBox;
 
 	string _type;
+	vector<GameObject*> gameObjects;
 
 	XMFLOAT4X4 _world;
 
