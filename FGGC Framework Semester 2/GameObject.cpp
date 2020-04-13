@@ -1,7 +1,7 @@
 #include "GameObject.h"
 #include "ParticleModel.h"
 
-GameObject::GameObject(string type, Geometry geometry, Material material) : _type(type)
+GameObject::GameObject(string type, Geometry geometry, Material material, Vector boundingBox) : _type(type), BoundingBox(boundingBox)
 {
 	_parent = nullptr;
 	_transform = new Transform();
@@ -15,7 +15,10 @@ GameObject::GameObject(string type, Geometry geometry, Material material) : _typ
 	_appearance->_textureRV = nullptr;
 	_debugger = new Debugger();
 
-	_particleModel = new ParticleModel(this);
+	if (_type.find("Cube") != string::npos)
+	{
+		_particleModel = new ParticleModel(this);
+	}
 }
 
 GameObject::~GameObject()
@@ -35,9 +38,9 @@ void GameObject::Update(float t)
 	if (_type.find("Cube") != string::npos)
 	{
 		_debugger->PrintLog("Cuuuuuuube");
-	}
 
-	_particleModel->Update(t);
+		_particleModel->Update(t);
+	}
 
 	XMStoreFloat4x4(&_world, scale * rotation * translation);
 

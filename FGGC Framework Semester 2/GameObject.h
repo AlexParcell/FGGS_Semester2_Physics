@@ -16,7 +16,7 @@ using namespace std;
 class GameObject
 {
 public:
-	GameObject(string type, Geometry geometry, Material material);
+	GameObject(string type, Geometry geometry, Material material, Vector boundingBox);
 	~GameObject();
 
 	string GetType() const { return _type; }
@@ -27,15 +27,19 @@ public:
 	Appearance* GetAppearance() { return _appearance; }
 	ParticleModel* GetParticleModel() { return _particleModel; }
 
+	Vector GetBoundingBox() { return BoundingBox; }
+
 	void SetParent(GameObject * parent) { _parent = parent; }
 
 	void Update(float t);
 	void Draw(ID3D11DeviceContext * pImmediateContext);
 
 private:
-	Transform* _transform;
-	Appearance* _appearance;
-	ParticleModel* _particleModel;
+	Transform* _transform = nullptr;
+	Appearance* _appearance = nullptr;
+	ParticleModel* _particleModel = nullptr;
+
+	Vector BoundingBox;
 
 	string _type;
 

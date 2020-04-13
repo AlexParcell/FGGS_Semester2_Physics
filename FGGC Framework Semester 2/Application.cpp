@@ -143,7 +143,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 	noSpecMaterial.specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	noSpecMaterial.specularPower = 0.0f;
 	
-	GameObject * gameObject = new GameObject("Floor", planeGeometry, noSpecMaterial);
+	GameObject * gameObject = new GameObject("Floor", planeGeometry, noSpecMaterial, Vector(15.0f, 0.5f, 15.0f));
 	gameObject->GetTransform()->SetPosition(0.0f, 0.0f, 0.0f);
 	gameObject->GetTransform()->SetScale(15.0f, 15.0f, 15.0f);
 	gameObject->GetTransform()->SetRotation(XMConvertToRadians(90.0f), 0.0f, 0.0f);
@@ -153,7 +153,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
 	for (auto i = 0; i < NUMBER_OF_CUBES; i++)
 	{
-		gameObject = new GameObject("Cube " + i, cubeGeometry, shinyMaterial);
+		gameObject = new GameObject("Cube " + i, cubeGeometry, shinyMaterial, Vector(0.25, 0.25f, 0.25f));
 		gameObject->GetTransform()->SetScale(0.5f, 0.5f, 0.5f);
 		gameObject->GetTransform()->SetPosition(-4.0f + (i * 2.0f), 0.5f, 10.0f);
 		gameObject->GetAppearance()->SetTextureRV(_pTextureRV);
@@ -679,12 +679,6 @@ void Application::Update()
 		object->GetParticleModel()->AddForce(Vector(0.0f, 11.0f, 0.0f));
 	}
 
-	Vector position = object->GetTransform()->GetPosition();
-	if (position.Y > 0.5f)
-		object->GetParticleModel()->AddForce(Vector(0.0f, -10.0f, 0.0f));
-	else
-		object->GetTransform()->SetPosition(Vector(position.X, 0.5f, position.Z));
-
 
 	// Update camera
 	float angleAroundZ = XMConvertToRadians(_cameraOrbitAngleXZ);
@@ -702,6 +696,15 @@ void Application::Update()
 	// Update objects
 	for (auto gameObject : _gameObjects)
 	{
+
+		if (gameObject != _gameObjects[0])
+		{
+			if (gameObject->GetParticleModel()->CollisionCheck(_gameObjects[0]))
+			{
+				gameObject->GetParticleModel()->AddForce(Vector(0, 10, 0));
+			}
+		}
+
 		gameObject->Update(deltaTime);
 	}
 }

@@ -20,10 +20,11 @@ class ParticleModel
 	Vector _velocity = Vector(0.0f, 0.0f, 0.0f);
 	GameObject* _object = nullptr;
 	MovementMode mode = MovementMode::DynamicAcceleration;
+	bool LaminarDragEnabled = true;
 	Vector _netForce;
 	vector<Vector> forces;
 	float mass = 1.0f;
-	float damping = 0.1f; // drag
+	float dragCoefficient = 1.05;
 
 	const float GroundThreshold = 0.0f;
 
@@ -44,9 +45,15 @@ public:
 
 	void AddForce(Vector f) { forces.push_back(f); }
 
+	Vector CalculateDrag();
+	Vector LaminarDrag();
+	Vector TurbulentDrag();
+
 	Vector GetAcceleration() { return _acceleration; }
 	Vector GetVelocity() { return _velocity; }
 	void SetAcceleration(Vector v) { _acceleration = v; }
 	void SetVelocity(Vector v) { _velocity = v; }
+
+	bool CollisionCheck(GameObject* otherObject);
 };
 
