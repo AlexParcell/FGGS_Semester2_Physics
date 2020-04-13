@@ -2,13 +2,32 @@
 
 #include "Vector.h"
 #include "GameObject.h"
+#include <vector>
+#include "Debugger.h"
+
+using namespace std;
+
+enum MovementMode
+{
+	ConstantVelocity = 0,
+	ConstantAcceleration,
+	DynamicAcceleration
+};
 
 class ParticleModel
 {
 	Vector _acceleration = Vector(0.0f, 0.0f, 0.0f);
 	Vector _velocity = Vector(0.0f, 0.0f, 0.0f);
 	GameObject* _object = nullptr;
-	bool _accelerate = false;
+	MovementMode mode = MovementMode::DynamicAcceleration;
+	Vector _netForce;
+	vector<Vector> forces;
+	float mass = 1.0f;
+	float damping = 0.1f; // drag
+
+	const float GroundThreshold = 0.0f;
+
+	Debugger debugger;
 
 public:
 	ParticleModel(GameObject* Object);
@@ -18,6 +37,12 @@ public:
 
 	void MoveConstantVelocity(float t);
 	void MoveConstantAcceleration(float t);
+
+	void UpdateNetForce();
+	void UpdateAcceleration();
+	void Move(float t);
+
+	void AddForce(Vector f) { forces.push_back(f); }
 
 	Vector GetAcceleration() { return _acceleration; }
 	Vector GetVelocity() { return _velocity; }

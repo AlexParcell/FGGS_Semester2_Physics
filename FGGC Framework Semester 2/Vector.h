@@ -122,6 +122,15 @@ public:
 		Z -= OtherVector.Z;
 	}
 
+	Vector operator/(float Num)
+	{
+		return Vector(
+			X / Num,
+			Y / Num,
+			Z / Num
+		);
+	}
+
 	XMFLOAT3 GetFormattedVector()
 	{
 		return XMFLOAT3(X, Y, Z);

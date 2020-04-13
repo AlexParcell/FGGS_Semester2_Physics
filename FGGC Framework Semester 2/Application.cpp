@@ -667,22 +667,24 @@ void Application::Update()
 
 	dwTimeStart = dwTimeCur;
 
-	static bool Active = false;
+	GameObject* object = _gameObjects[1];
 
 	// Move gameobject
 	if (GetAsyncKeyState('1') & 0x8000)
 	{
-		GameObject* object = _gameObjects[1];
-		if (Active)
-		{
-			object->GetParticleModel()->SetVelocity(Vector(1, 0, 0));
-		}
-		else
-		{
-			object->GetParticleModel()->SetVelocity(Vector(0, 0, 0));
-		}
-		Active = !Active;
+		object->GetParticleModel()->AddForce(Vector(5.0f, 0.0f, 0.0f));
 	}
+	if (GetAsyncKeyState('2') & 0x8000)
+	{
+		object->GetParticleModel()->AddForce(Vector(0.0f, 11.0f, 0.0f));
+	}
+
+	Vector position = object->GetTransform()->GetPosition();
+	if (position.Y > 0.5f)
+		object->GetParticleModel()->AddForce(Vector(0.0f, -10.0f, 0.0f));
+	else
+		object->GetTransform()->SetPosition(Vector(position.X, 0.5f, position.Z));
+
 
 	// Update camera
 	float angleAroundZ = XMConvertToRadians(_cameraOrbitAngleXZ);
