@@ -25,7 +25,6 @@ class ParticleModel
 	vector<Vector> forces;
 	float mass = 1.0f;
 	float dragCoefficient = 1.05;
-	bool Grounded = true;
 
 	const float GroundThreshold = 0.0f;
 
@@ -57,7 +56,7 @@ public:
 	void SetAcceleration(Vector v) { _acceleration = v; }
 	void SetVelocity(Vector v) { _velocity = v; }
 
-	void ResolveCollisions();
+	Vector ResolveCollisions();
 
 	bool CollisionCheck(GameObject* otherObject);
 };

@@ -26,7 +26,6 @@ public:
 	void SetPosition(Vector position) { _oldPosition = _position, _position = position;}
 
 	Vector GetPosition() const { return _position; }
-	Vector GetOldPosition() const { return _oldPosition; }
 
 	void SetScale(Vector scale) { _scale = scale; }
 
