@@ -23,8 +23,10 @@ void ParticleModel::Update(float t)
 	case (MovementMode::DynamicAcceleration):
 		{
 		AddForce(CalculateDrag());
-		AddForce(Vector(0, -10, 0));
-		AddForce(ResolveCollisions());
+
+		if (!Grounded)
+			AddForce(Vector(0, -10, 0));
+
 		UpdateNetForce();
 		UpdateAcceleration();
 		Move(t);
@@ -65,6 +67,11 @@ void ParticleModel::Move(float t)
 
 	Vector newPosition = _object->GetTransform()->GetPosition() + (_velocity * t) + (_acceleration * 0.5 * t * t);
 	_object->GetTransform()->SetPosition(newPosition);
+
+	if (newPosition.Y > _object->GetTransform()->GetOldPosition().Y)
+		Grounded = false;
+
+	ResolveCollisions();
 
 	_netForce = Vector(0.0f, 0.0f, 0.0f);
 }
@@ -116,7 +123,7 @@ bool ParticleModel::CollisionCheck(GameObject* otherObject)
 		((Position.Z - Scale.Z <= OtherPosition.Z + OtherScale.Z) && (Position.Z + Scale.Z >= OtherPosition.Z - OtherScale.Z));
 }
 
-Vector ParticleModel::ResolveCollisions()
+void ParticleModel::ResolveCollisions()
 {
 	Vector force;
 	for (int i = 0; i < _object->GetGameObjects().size(); i++)
@@ -129,7 +136,7 @@ Vector ParticleModel::ResolveCollisions()
 				if (gameObject->GetType() == "Floor")
 				{
 					_velocity.Y = 0;
-					force = Vector(0, 10, 0);
+					Grounded = true;
 				}
 				else
 				{
@@ -144,5 +151,4 @@ Vector ParticleModel::ResolveCollisions()
 			}
 		}
 	}
-	return force;
 }
