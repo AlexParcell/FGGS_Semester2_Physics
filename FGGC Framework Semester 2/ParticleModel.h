@@ -56,7 +56,7 @@ public:
 	void SetAcceleration(Vector v) { _acceleration = v; }
 	void SetVelocity(Vector v) { _velocity = v; }
 
-	void ResolveCollisions();
+	Vector ResolveCollisions();
 
 	bool CollisionCheck(GameObject* otherObject);
 };

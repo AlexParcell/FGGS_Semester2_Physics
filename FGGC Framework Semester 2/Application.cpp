@@ -659,11 +659,11 @@ void Application::Update()
 {
     // Update our time
     static float deltaTime = 0.0f;
-    static DWORD dwTimeStart = GetTickCount64();
+    static DWORD dwTimeStart = 0;
 
     DWORD dwTimeCur = GetTickCount64();
 
-	deltaTime = ((float)dwTimeCur - dwTimeStart) / 1000.0f;
+	deltaTime = (dwTimeCur - dwTimeStart) / 1000.0f;
 
 	dwTimeStart = dwTimeCur;
 

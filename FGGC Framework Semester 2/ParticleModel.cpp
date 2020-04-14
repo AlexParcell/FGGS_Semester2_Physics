@@ -24,6 +24,7 @@ void ParticleModel::Update(float t)
 		{
 		AddForce(CalculateDrag());
 		AddForce(Vector(0, -10, 0));
+		AddForce(ResolveCollisions());
 		UpdateNetForce();
 		UpdateAcceleration();
 		Move(t);
@@ -50,6 +51,7 @@ void ParticleModel::UpdateNetForce()
 	for (int i = 0; i < forces.size(); i++)
 	{
 		_netForce += forces[i];
+		debugger.PrintVector("Force: ", _netForce);
 	}
 	forces.clear();
 }
@@ -60,11 +62,6 @@ void ParticleModel::UpdateAcceleration()
 void ParticleModel::Move(float t)
 {
 	_velocity += _acceleration * t;
-
-	//debugger.PrintVector("Velocity: ", _velocity);
-	debugger.PrintLog(t);
-
-	ResolveCollisions();
 
 	Vector newPosition = _object->GetTransform()->GetPosition() + (_velocity * t) + (_acceleration * 0.5 * t * t);
 	_object->GetTransform()->SetPosition(newPosition);
@@ -119,11 +116,10 @@ bool ParticleModel::CollisionCheck(GameObject* otherObject)
 		((Position.Z - Scale.Z <= OtherPosition.Z + OtherScale.Z) && (Position.Z + Scale.Z >= OtherPosition.Z - OtherScale.Z));
 }
 
-void ParticleModel::ResolveCollisions()
+Vector ParticleModel::ResolveCollisions()
 {
 	bool DoFloor = false;
-	bool CollisionFound = false;
-	Vector Normal = Vector(0, 1, 0);
+	Vector force;
 	for (int i = 0; i < _object->GetGameObjects().size(); i++)
 	{
 		GameObject* gameObject = _object->GetGameObjects()[i];
@@ -139,11 +135,11 @@ void ParticleModel::ResolveCollisions()
 				{
 					_object->GetTransform()->RevertPosition();
 					ParticleModel* otherParticle = gameObject->GetParticleModel();
-					_velocity += (_velocity * mass + otherParticle->GetVelocity() * otherParticle->GetMass() + (otherParticle->GetVelocity() - _velocity) * otherParticle->GetMass() * 0.5f) / (mass + otherParticle->GetMass());
+					_velocity = (_velocity * mass + otherParticle->GetVelocity() * otherParticle->GetMass() + (otherParticle->GetVelocity() - _velocity) * otherParticle->GetMass() * 0.5f) / (mass + otherParticle->GetMass());
 
 					gameObject->GetTransform()->RevertPosition();
 					Vector otherVelocity = (_velocity * mass + otherParticle->GetVelocity() * otherParticle->GetMass() + (otherParticle->GetVelocity() - _velocity) * mass * 0.5f) / (mass + otherParticle->GetMass());
-					otherParticle->SetVelocity(otherParticle->GetVelocity() + otherVelocity);
+					otherParticle->SetVelocity(otherVelocity);
 				}
 			}
 		}
@@ -151,8 +147,8 @@ void ParticleModel::ResolveCollisions()
 
 	if (DoFloor)
 	{
-		_velocity = Vector(0, 0, 0) + Normal * _velocity.GetMagnitude() * 0.5f;
-
-		debugger.PrintVector("velocity: ", _velocity);
+		_velocity.Y = abs(_velocity.Y * 0.75);
+		force = Vector(0, 10, 0);
 	}
+	return force;
 }
