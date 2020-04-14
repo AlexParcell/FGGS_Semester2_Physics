@@ -34,6 +34,8 @@ public:
 
 	void SetParent(GameObject * parent) { _parent = parent; }
 
+	Vector Normal = Vector(0, 1, 0);
+
 	void SetGameObjects(vector<GameObject*> v) { gameObjects = v; }
 	vector<GameObject*> GetGameObjects() { return gameObjects; }
 
