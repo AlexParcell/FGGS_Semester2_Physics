@@ -49,14 +49,10 @@ public:
 	Vector LaminarDrag();
 	Vector TurbulentDrag();
 
-	float GetMass() { return mass; }
-
 	Vector GetAcceleration() { return _acceleration; }
 	Vector GetVelocity() { return _velocity; }
 	void SetAcceleration(Vector v) { _acceleration = v; }
 	void SetVelocity(Vector v) { _velocity = v; }
-
-	Vector ResolveCollisions();
 
 	bool CollisionCheck(GameObject* otherObject);
 };
