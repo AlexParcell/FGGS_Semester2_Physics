@@ -97,14 +97,6 @@ Vector ParticleModel::TurbulentDrag()
 // AABB
 bool ParticleModel::CollisionCheck(GameObject* otherObject)
 {
-	/*
-	function intersect(a, b) {
-		return (a.minX <= b.maxX && a.maxX >= b.minX) &&
-			(a.minY <= b.maxY && a.maxY >= b.minY) &&
-			(a.minZ <= b.maxZ && a.maxZ >= b.minZ);
-	}
-	*/
-
 	Vector Position = _object->GetTransform()->GetPosition();
 	Vector Scale = _object->GetBoundingBox();
 
