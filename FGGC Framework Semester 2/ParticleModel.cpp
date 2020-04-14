@@ -24,6 +24,7 @@ void ParticleModel::Update(float t)
 		{
 		AddForce(CalculateDrag());
 		AddForce(Vector(0, -10, 0));
+		AddForce(ResolveCollisions());
 		UpdateNetForce();
 		UpdateAcceleration();
 		Move(t);
@@ -113,4 +114,35 @@ bool ParticleModel::CollisionCheck(GameObject* otherObject)
 	return ((Position.X - Scale.X <= OtherPosition.X + OtherScale.X) && (Position.X + Scale.X >= OtherPosition.X - OtherScale.X)) &&
 		((Position.Y - Scale.Y <= OtherPosition.Y + OtherScale.Y) && (Position.Y + Scale.Y >= OtherPosition.Y - OtherScale.Y)) &&
 		((Position.Z - Scale.Z <= OtherPosition.Z + OtherScale.Z) && (Position.Z + Scale.Z >= OtherPosition.Z - OtherScale.Z));
+}
+
+Vector ParticleModel::ResolveCollisions()
+{
+	Vector force;
+	for (int i = 0; i < _object->GetGameObjects().size(); i++)
+	{
+		GameObject* gameObject = _object->GetGameObjects()[i];
+		if (gameObject != _object)
+		{
+			if (CollisionCheck(gameObject))
+			{
+				if (gameObject->GetType() == "Floor")
+				{
+					_velocity.Y = 0;
+					force = Vector(0, 10, 0);
+				}
+				else
+				{
+					_object->GetTransform()->RevertPosition();
+					ParticleModel* otherParticle = gameObject->GetParticleModel();
+					_velocity = (_velocity * mass + otherParticle->GetVelocity() * otherParticle->GetMass() + (otherParticle->GetVelocity() - _velocity) * otherParticle->GetMass() * 2.0f) / (mass + otherParticle->GetMass());
+
+					gameObject->GetTransform()->RevertPosition();
+					Vector otherVelocity = (_velocity * mass + otherParticle->GetVelocity() * otherParticle->GetMass() + (otherParticle->GetVelocity() - _velocity) * mass * 2.0f) / (mass + otherParticle->GetMass());
+					otherParticle->SetVelocity(otherVelocity);
+				}
+			}
+		}
+	}
+	return force;
 }

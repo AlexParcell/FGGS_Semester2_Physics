@@ -15,7 +15,7 @@ GameObject::GameObject(string type, Geometry geometry, Material material, Vector
 	_appearance->_textureRV = nullptr;
 	_debugger = new Debugger();
 
-	if (_type.find("Cube") != string::npos)
+	if (type == "Cube")
 	{
 		_particleModel = new ParticleModel(this);
 	}
