@@ -118,6 +118,7 @@ bool ParticleModel::CollisionCheck(GameObject* otherObject)
 
 Vector ParticleModel::ResolveCollisions()
 {
+	bool DoFloor = false;
 	Vector force;
 	for (int i = 0; i < _object->GetGameObjects().size(); i++)
 	{
@@ -128,21 +129,26 @@ Vector ParticleModel::ResolveCollisions()
 			{
 				if (gameObject->GetType() == "Floor")
 				{
-					_velocity.Y = 0;
-					force = Vector(0, 10, 0);
+					DoFloor = true;
 				}
 				else
 				{
 					_object->GetTransform()->RevertPosition();
 					ParticleModel* otherParticle = gameObject->GetParticleModel();
-					_velocity = (_velocity * mass + otherParticle->GetVelocity() * otherParticle->GetMass() + (otherParticle->GetVelocity() - _velocity) * otherParticle->GetMass() * 2.0f) / (mass + otherParticle->GetMass());
+					_velocity = (_velocity * mass + otherParticle->GetVelocity() * otherParticle->GetMass() + (otherParticle->GetVelocity() - _velocity) * otherParticle->GetMass() * 0.5f) / (mass + otherParticle->GetMass());
 
 					gameObject->GetTransform()->RevertPosition();
-					Vector otherVelocity = (_velocity * mass + otherParticle->GetVelocity() * otherParticle->GetMass() + (otherParticle->GetVelocity() - _velocity) * mass * 2.0f) / (mass + otherParticle->GetMass());
+					Vector otherVelocity = (_velocity * mass + otherParticle->GetVelocity() * otherParticle->GetMass() + (otherParticle->GetVelocity() - _velocity) * mass * 0.5f) / (mass + otherParticle->GetMass());
 					otherParticle->SetVelocity(otherVelocity);
 				}
 			}
 		}
+	}
+
+	if (DoFloor)
+	{
+		_velocity.Y = abs(_velocity.Y * 0.75);
+		force = Vector(0, 10, 0);
 	}
 	return force;
 }

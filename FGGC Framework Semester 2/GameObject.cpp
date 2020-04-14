@@ -37,8 +37,6 @@ void GameObject::Update(float t)
 
 	if (_type.find("Cube") != string::npos)
 	{
-		_debugger->PrintLog("Cuuuuuuube");
-
 		_particleModel->Update(t);
 	}
 
