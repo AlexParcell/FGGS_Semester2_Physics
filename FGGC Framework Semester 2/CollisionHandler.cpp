@@ -50,13 +50,12 @@ void CollisionHandler::ResolveCollision(Contact collision)
 	{
 		Vector apos = aTransform->GetPosition();
 		aTransform->SetPosition(apos - (collision.hitNormal * collision.depth));
-		Vector av = (a->GetVelocity() * a->GetMass() + b->GetVelocity() * b->GetMass() + (b->GetVelocity() - a->GetVelocity()) * b->GetMass() * 1.5) / (a->GetMass() + b->GetMass());
+		Vector av = (a->GetVelocity() * a->GetMass() + b->GetVelocity() * b->GetMass() + (b->GetVelocity() - a->GetVelocity()) * b->GetMass() * 2.0) / (a->GetMass() + b->GetMass());
 		av = av * (collision.hitNormal * -1);
-
 
 		Vector bpos = bTransform->GetPosition();
 		bTransform->SetPosition(bpos + (collision.hitNormal * collision.depth));
-		Vector bv = (a->GetVelocity() * a->GetMass() + b->GetVelocity() * b->GetMass() + (b->GetVelocity() - a->GetVelocity()) * a->GetMass() * 1.5) / (a->GetMass() + b->GetMass());
+		Vector bv = (a->GetVelocity() * a->GetMass() + b->GetVelocity() * b->GetMass() + (b->GetVelocity() - a->GetVelocity()) * a->GetMass() * 2.0) / (a->GetMass() + b->GetMass());
 		bv = bv * collision.hitNormal;
 
 		a->SetVelocity(av);
@@ -84,6 +83,76 @@ void CollisionHandler::ResolveFloor(ParticleModel* a, float FloorHeight)
 		a->SetVelocity(av);
 		Vector aa = a->GetAcceleration();
 		aa.Y = 0;
+		a->SetAcceleration(aa);
+	}
+}
+
+void CollisionHandler::ResolveWalls(ParticleModel* a, float minX, float maxX, float minZ, float maxZ)
+{
+	Transform* aTransform = a->GetGameObject()->GetTransform();
+	Vector aPos = aTransform->GetPosition();
+
+	if (aPos.X - a->Radius < minX)
+	{
+		// difference between position to radius takeaway position to floor height
+		float DistanceToWall = abs(aPos.X - minX);
+		float Depth = (aPos.X + a->Radius) - DistanceToWall;
+
+		aTransform->SetPosition(Vector(aPos.X - (aPos.X - Depth), aPos.Y, aPos.Z));
+
+		Vector av = a->GetVelocity();
+		av.X *= -1;
+		a->SetVelocity(av);
+		Vector aa = a->GetAcceleration();
+		aa.X *= -1;
+		a->SetAcceleration(aa);
+	}
+
+	if (aPos.X + a->Radius > maxX)
+	{
+		// difference between position to radius takeaway position to floor height
+		float DistanceToWall = abs(aPos.X - maxX);
+		float Depth = (aPos.X + a->Radius) - DistanceToWall;
+
+		aTransform->SetPosition(Vector(aPos.X + (aPos.X - Depth), aPos.Y, aPos.Z));
+
+		Vector av = a->GetVelocity();
+		av.X *= -1;
+		a->SetVelocity(av);
+		Vector aa = a->GetAcceleration();
+		aa.X *= -1;
+		a->SetAcceleration(aa);
+	}
+
+	if (aPos.Z - a->Radius < minZ)
+	{
+		// difference between position to radius takeaway position to floor height
+		float DistanceToWall = abs(aPos.Z - minZ);
+		float Depth = (aPos.Z + a->Radius) - DistanceToWall;
+
+		aTransform->SetPosition(Vector(aPos.X, aPos.Y, aPos.Z - (aPos.Z - Depth)));
+
+		Vector av = a->GetVelocity();
+		av.Z *= -1;
+		a->SetVelocity(av);
+		Vector aa = a->GetAcceleration();
+		aa.Z *= -1;
+		a->SetAcceleration(aa);
+	}
+
+	if (aPos.Z + a->Radius > maxZ)
+	{
+		// difference between position to radius takeaway position to floor height
+		float DistanceToWall = abs(aPos.Z - maxZ);
+		float Depth = (aPos.Z + a->Radius) - DistanceToWall;
+
+		aTransform->SetPosition(Vector(aPos.X, aPos.Y, aPos.Z + (aPos.Z - Depth)));
+
+		Vector av = a->GetVelocity();
+		av.Z *= -1;
+		a->SetVelocity(av);
+		Vector aa = a->GetAcceleration();
+		aa.Z *= -1;
 		a->SetAcceleration(aa);
 	}
 }

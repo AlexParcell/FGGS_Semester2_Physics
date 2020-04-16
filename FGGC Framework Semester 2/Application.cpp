@@ -679,7 +679,19 @@ void Application::Update()
 	GameObject* object = _gameObjects[1];
 
 	// Move gameobject
-	if (GetAsyncKeyState('1') & 0x8000)
+	if (GetAsyncKeyState('W') & 0x8000)
+	{
+		object->GetParticleModel()->AddForce(Vector(0.0f, 0.0f, 10.0f));
+	}
+	if (GetAsyncKeyState('A') & 0x8000)
+	{
+		object->GetParticleModel()->AddForce(Vector(-10.0f, 0.0f, 0.0f));
+	}
+	if (GetAsyncKeyState('S') & 0x8000)
+	{
+		object->GetParticleModel()->AddForce(Vector(0.0f, 0.0f, -10.0f));
+	}
+	if (GetAsyncKeyState('D') & 0x8000)
 	{
 		object->GetParticleModel()->AddForce(Vector(10.0f, 0.0f, 0.0f));
 	}
@@ -718,6 +730,7 @@ void Application::Update()
 					cHandler->ResolveCollision(c);
 				}
 				cHandler->ResolveFloor(gameObject->GetParticleModel(), 0.0f);
+				cHandler->ResolveWalls(gameObject->GetParticleModel(), -15.0f, 15.0f, -15.0f, 15.0f);
 			}
 		}
 

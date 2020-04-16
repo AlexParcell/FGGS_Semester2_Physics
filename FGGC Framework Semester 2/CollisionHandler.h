@@ -31,5 +31,6 @@ public:
 	Contact CheckCollision(ParticleModel* a, ParticleModel* b, float t);
 	void ResolveCollision(Contact collision);
 	void ResolveFloor(ParticleModel* a, float FloorHeight);
+	void CollisionHandler::ResolveWalls(ParticleModel* a, float minX, float maxX, float minZ, float maxZ);
 };
 
