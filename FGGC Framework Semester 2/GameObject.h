@@ -34,7 +34,6 @@ public:
 
 	void SetParent(GameObject * parent) { _parent = parent; }
 
-
 	void Update(float t);
 	void Draw(ID3D11DeviceContext * pImmediateContext);
 

@@ -6,6 +6,13 @@ CollisionHandler* CollisionHandler::Instance = nullptr;
 
 Contact CollisionHandler::CheckCollision(ParticleModel* a, ParticleModel* b, float t)
 {
+	if (a == b)
+	{
+		Contact contact;
+		contact.Collided = false;
+		return contact;
+	}
+
 	a->UpdateBoundingBox();
 	b->UpdateBoundingBox();
 	Vector amin = a->GetBoundingBox().LowerBound;
@@ -82,6 +89,7 @@ void CollisionHandler::ResolveCollision(Contact collision)
 		Vector aa = a->GetAcceleration();
 		aa.Y = 0;
 		a->SetAcceleration(aa);
+		return;
 	}
 	else
 	{

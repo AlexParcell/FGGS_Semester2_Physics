@@ -156,7 +156,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 	{
 		gameObject = new GameObject("Cube", cubeGeometry, shinyMaterial, Vector(0.5f, 0.5f, 0.5f));
 		gameObject->GetTransform()->SetScale(Vector(0.5f, 0.5f, 0.5f));
-		gameObject->GetTransform()->SetPosition(Vector(-4.0f + (i * 2.0f), 2.0f, 10.0f));
+		gameObject->GetTransform()->SetPosition(Vector(-3.0f + (i * 2.0f), 2.0f, 10.0f));
 		gameObject->GetAppearance()->SetTextureRV(_pTextureRV);
 
 		_gameObjects.push_back(gameObject);
@@ -697,20 +697,17 @@ void Application::Update()
 	CollisionHandler* cHandler = CollisionHandler::GetInstance();
 
 	// Update objects
-	for (auto gameObject : _gameObjects)
+	for (GameObject* gameObject : _gameObjects)
 	{
 		for (int i = 0; i < _gameObjects.size(); i++)
 		{
 			GameObject* otherObject = _gameObjects[i];
-			if (otherObject->GetTransform()->GetPosition() != gameObject->GetTransform()->GetPosition());
+			if (gameObject->GetParticleModel()->GetObjectType() == DYNAMIC)
 			{
-				if (gameObject->GetParticleModel()->GetObjectType() == DYNAMIC)
+				Contact c = cHandler->CheckCollision(gameObject->GetParticleModel(), otherObject->GetParticleModel(), deltaTime);
+				if (c.Collided)
 				{
-					Contact c = cHandler->CheckCollision(gameObject->GetParticleModel(), otherObject->GetParticleModel(), deltaTime);
-					if (c.Collided)
-					{
-						cHandler->ResolveCollision(c);
-					}
+					cHandler->ResolveCollision(c);
 				}
 			}
 		}
