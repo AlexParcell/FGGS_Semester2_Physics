@@ -73,6 +73,11 @@ public:
 		return sqrt(pow(X, 2.0f) + pow(Y, 2.0f) + pow(Z, 2.0f));
 	}
 
+	float GetSquaredMagnitude()
+	{
+		return pow(X, 2.0f) + pow(Y, 2.0f) + pow(Z, 2.0f);
+	}
+
 	Vector operator*(float N)
 	{
 		return Vector

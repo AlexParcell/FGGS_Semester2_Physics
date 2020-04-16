@@ -709,6 +709,7 @@ void Application::Update()
 				{
 					cHandler->ResolveCollision(c);
 				}
+				cHandler->ResolveFloor(gameObject->GetParticleModel(), 0.0f);
 			}
 		}
 

@@ -47,6 +47,8 @@ public:
 
 	void Update(float t);
 
+	float Radius = 0.5f;
+
 	void SetGrounded(bool g) { Grounded = g; }
 	bool GetGrounded() { return Grounded; }
 

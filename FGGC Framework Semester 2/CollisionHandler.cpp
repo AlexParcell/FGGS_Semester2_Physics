@@ -6,69 +6,35 @@ CollisionHandler* CollisionHandler::Instance = nullptr;
 
 Contact CollisionHandler::CheckCollision(ParticleModel* a, ParticleModel* b, float t)
 {
-	if (a == b)
+	if (a == b || b->GetObjectType() == STATIC)
 	{
 		Contact contact;
 		contact.Collided = false;
 		return contact;
 	}
 
-	a->UpdateBoundingBox();
-	b->UpdateBoundingBox();
-	Vector amin = a->GetBoundingBox().LowerBound;
-	Vector amax = a->GetBoundingBox().UpperBound;
-	Vector bmin = b->GetBoundingBox().LowerBound;
-	Vector bmax = b->GetBoundingBox().UpperBound;
-
-	BoundingBox bbox = b->GetBoundingBox();
+	Transform* aTransform = a->GetGameObject()->GetTransform();
+	Transform* bTransform = b->GetGameObject()->GetTransform();
 
 	Contact contact;
 	contact.A = a;
 	contact.B = b;
 	contact.deltaTime = t;
 
-	static const Vector faces[6]
+	float r = a->Radius + b->Radius;
+	Vector d = bTransform->GetPosition() - aTransform->GetPosition();
+
+	if (d.GetSquaredMagnitude() - r * r > 0
+		|| d.GetSquaredMagnitude() == 0.0f)
 	{
-		Vector(-1, 0, 0),
-		Vector(1, 0, 0),
-		Vector(0, -1, 0),
-		Vector(0, 1, 0),
-		Vector(0, 0, -1),
-		Vector(0, 0, 1)
-	};
-
-	float distances[6]
-	{
-		(bmax.X - amin.X),
-		(amax.X - bmin.X),
-		(bmax.Y - amin.Y),
-		(amax.Y - bmin.Y),
-		(bmax.Z - amin.Z),
-		(amax.Z - bmin.Z)
-	};
-
-	float depth = 0.0f;
-	Vector Normal;
-
-	contact.Collided = true;
-
-	for (int i = 0; i < 6; i++)
-	{
-		if (distances[i] < 0.0f)
-		{
-			contact.Collided = false;
-			break;
-		}
-
-		if ((i == 0) || (distances[i] < depth))
-		{
-			depth = distances[i];
-			Normal = faces[i];
-		}
+		return contact;
 	}
 
-	contact.hitNormal = Normal;
-	contact.depth = depth;
+	Vector n = d.GetNormalizedVector();
+
+	contact.Collided = true;
+	contact.hitNormal = d;
+	contact.depth = fabsf(d.GetMagnitude() - r) * 0.5f;
 
 	return contact;
 }
@@ -80,26 +46,11 @@ void CollisionHandler::ResolveCollision(Contact collision)
 	Transform* aTransform = a->GetGameObject()->GetTransform();
 	Transform* bTransform = b->GetGameObject()->GetTransform();
 
-	if (b->GetObjectType() == STATIC)
-	{
-		a->AddForce(Vector(0, 10.0f, 0));
-		Vector apos = aTransform->GetPosition();
-		aTransform->SetPosition(apos - (collision.hitNormal * collision.depth));
-
-		Vector av = a->GetVelocity();
-		av.Y = 0;
-		a->SetVelocity(av);
-		Vector aa = a->GetAcceleration();
-		aa.Y = 0;
-		a->SetAcceleration(aa);
-		return;
-	}
-	else
+	if (b->GetObjectType() == DYNAMIC)
 	{
 		Vector apos = aTransform->GetPosition();
 		aTransform->SetPosition(apos - (collision.hitNormal * collision.depth));
 		Vector av = (a->GetVelocity() * a->GetMass() + b->GetVelocity() * b->GetMass() + (b->GetVelocity() - a->GetVelocity()) * b->GetMass() * 0.5) / (a->GetMass() + b->GetMass());
-		Debugger::GetInstance()->PrintVector("COLLISION NORMAL: ", collision.hitNormal);
 
 		Vector bpos = bTransform->GetPosition();
 		bTransform->SetPosition(bpos + (collision.hitNormal * collision.depth));
@@ -107,5 +58,48 @@ void CollisionHandler::ResolveCollision(Contact collision)
 
 		a->SetVelocity(av);
 		b->SetVelocity(bv);
+	}
+}
+/*
+if (b->GetObjectType() == STATIC)
+{
+	a->AddForce(Vector(0, 10.0f, 0));
+	Vector apos = aTransform->GetPosition();
+	aTransform->SetPosition(apos - (collision.hitNormal * collision.depth));
+
+	Vector av = a->GetVelocity();
+	av.Y = 0;
+	a->SetVelocity(av);
+	Vector aa = a->GetAcceleration();
+	aa.Y = 0;
+	a->SetAcceleration(aa);
+	return;
+}
+else
+*/
+
+void CollisionHandler::ResolveFloor(ParticleModel* a, float FloorHeight)
+{
+	Transform* aTransform = a->GetGameObject()->GetTransform();
+	Vector aPos = aTransform->GetPosition();
+
+
+
+	if (aPos.Y - a->Radius < FloorHeight)
+	{
+		a->AddForce(Vector(0, 10.0f, 0));
+
+		// difference between position to radius takeaway position to floor height
+		float DistanceToFloor = abs(aPos.Y - FloorHeight);
+		float Depth = (aPos.Y + a->Radius) - DistanceToFloor;
+
+		aTransform->SetPosition(Vector(aPos.X, aPos.Y - (aPos.Y - Depth), aPos.Z));
+
+		Vector av = a->GetVelocity();
+		av.Y = 0;
+		a->SetVelocity(av);
+		Vector aa = a->GetAcceleration();
+		aa.Y = 0;
+		a->SetAcceleration(aa);
 	}
 }

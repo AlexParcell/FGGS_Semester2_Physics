@@ -13,7 +13,6 @@ struct Contact
 	float depth;
 };
 
-
 class CollisionHandler
 {
 	static CollisionHandler* Instance;
@@ -31,5 +30,6 @@ public:
 
 	Contact CheckCollision(ParticleModel* a, ParticleModel* b, float t);
 	void ResolveCollision(Contact collision);
+	void ResolveFloor(ParticleModel* a, float FloorHeight);
 };
 
