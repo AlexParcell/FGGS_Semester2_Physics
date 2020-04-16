@@ -373,6 +373,7 @@
     <ClCompile Include="Appearance.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CollisionHandler.cpp" />
     <ClCompile Include="DDSTextureLoader.cpp" />
     <ClCompile Include="Debugger.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -391,6 +392,7 @@
     <ClInclude Include="Appearance.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CollisionHandler.h" />
     <ClInclude Include="DDSTextureLoader.h" />
     <ClInclude Include="Debugger.h" />
     <ClInclude Include="GameObject.h" />

@@ -1,5 +1,5 @@
 #include "ParticleModel.h"
-
+#include "Debugger.h"
 
 ParticleModel::ParticleModel(GameObject* Object) : _object(Object)
 {
@@ -22,12 +22,14 @@ void ParticleModel::Update(float t)
 		break;
 	case (MovementMode::DynamicAcceleration):
 		{
-		AddForce(CalculateDrag());
-		AddForce(Vector(0, -10, 0));
-		AddForce(ResolveCollisions());
-		UpdateNetForce();
-		UpdateAcceleration();
-		Move(t);
+		if (type == DYNAMIC)
+		{
+			//AddForce(CalculateDrag());
+			AddForce(Vector(0, -10, 0));
+			UpdateNetForce();
+			UpdateAcceleration();
+			Move(t);
+		}
 		}
 		break;
 	}
@@ -51,20 +53,23 @@ void ParticleModel::UpdateNetForce()
 	for (int i = 0; i < forces.size(); i++)
 	{
 		_netForce += forces[i];
-		debugger.PrintVector("Force: ", _netForce);
 	}
 	forces.clear();
+	Debugger::GetInstance()->PrintVector("f: ", _netForce);
 }
 void ParticleModel::UpdateAcceleration()
 {
 	_acceleration = _netForce / mass;
+	Debugger::GetInstance()->PrintVector("a: ", _acceleration);
 }
 void ParticleModel::Move(float t)
 {
 	_velocity += _acceleration * t;
 
-	Vector newPosition = _object->GetTransform()->GetPosition() + (_velocity * t) + (_acceleration * 0.5 * t * t);
+	Vector newPosition = _object->GetTransform()->GetPosition() + (_velocity * t);
 	_object->GetTransform()->SetPosition(newPosition);
+
+	Debugger::GetInstance()->PrintVector("v: ", _velocity);
 
 	_netForce = Vector(0.0f, 0.0f, 0.0f);
 }
@@ -94,6 +99,25 @@ Vector ParticleModel::TurbulentDrag()
 	return unit * -dragMag;
 }
 
+void ParticleModel::UpdateBoundingBox()
+{
+	Vector boxDimensions = _object->GetBoundingBox();
+	Vector position = _object->GetTransform()->GetPosition();
+
+	bb.LowerBound =	Vector(
+			position.X - boxDimensions.X,
+			position.Y - boxDimensions.Y,
+			position.Z - boxDimensions.Z
+			);
+
+	bb.UpperBound = Vector(
+		position.X + boxDimensions.X,
+		position.Y + boxDimensions.Y,
+		position.Z + boxDimensions.Z
+	);
+}
+
+/*
 // AABB
 bool ParticleModel::CollisionCheck(GameObject* otherObject)
 {
@@ -107,6 +131,7 @@ bool ParticleModel::CollisionCheck(GameObject* otherObject)
 		((Position.Y - Scale.Y <= OtherPosition.Y + OtherScale.Y) && (Position.Y + Scale.Y >= OtherPosition.Y - OtherScale.Y)) &&
 		((Position.Z - Scale.Z <= OtherPosition.Z + OtherScale.Z) && (Position.Z + Scale.Z >= OtherPosition.Z - OtherScale.Z));
 }
+
 
 Vector ParticleModel::ResolveCollisions()
 {
@@ -125,13 +150,8 @@ Vector ParticleModel::ResolveCollisions()
 				}
 				else
 				{
-					_object->GetTransform()->RevertPosition();
-					ParticleModel* otherParticle = gameObject->GetParticleModel();
-					_velocity = (_velocity * mass + otherParticle->GetVelocity() * otherParticle->GetMass() + (otherParticle->GetVelocity() - _velocity) * otherParticle->GetMass() * 0.5f) / (mass + otherParticle->GetMass());
 
-					gameObject->GetTransform()->RevertPosition();
-					Vector otherVelocity = (_velocity * mass + otherParticle->GetVelocity() * otherParticle->GetMass() + (otherParticle->GetVelocity() - _velocity) * mass * 0.5f) / (mass + otherParticle->GetMass());
-					otherParticle->SetVelocity(otherVelocity);
+
 				}
 			}
 		}
@@ -144,3 +164,4 @@ Vector ParticleModel::ResolveCollisions()
 	}
 	return force;
 }
+*/

@@ -1,5 +1,7 @@
 #include "Debugger.h"
 
+Debugger* Debugger::Instance = nullptr;
+
 Debugger::Debugger()
 {
 
@@ -29,5 +31,12 @@ void Debugger::PrintVector(std::string message, Vector v)
 	
 	char buffer[1024] = { 0 };
 	sprintf_s(buffer, "%f, %f, %f \n", v.X, v.Y, v.Z);
+	OutputDebugStringA(buffer);
+}
+
+void Debugger::PrintFloat(float content)
+{
+	char buffer[1024] = { 0 };
+	sprintf_s(buffer, "%f", content);
 	OutputDebugStringA(buffer);
 }

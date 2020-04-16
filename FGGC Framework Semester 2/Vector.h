@@ -131,6 +131,17 @@ public:
 		);
 	}
 
+	bool operator==(Vector OtherVector)
+	{
+		return (X == OtherVector.X && Y == OtherVector.Y && Z == OtherVector.Z);
+	}
+
+	bool operator!=(Vector OtherVector)
+	{
+		return (X != OtherVector.X || Y != OtherVector.Y || Z != OtherVector.Z);
+	}
+
+
 	XMFLOAT3 GetFormattedVector()
 	{
 		return XMFLOAT3(X, Y, Z);

@@ -23,6 +23,7 @@
     <ClInclude Include="Appearance.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="ParticleModel.h" />
+    <ClInclude Include="CollisionHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -35,6 +36,7 @@
     <ClCompile Include="Appearance.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="ParticleModel.cpp" />
+    <ClCompile Include="CollisionHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CLInclude Include="resource.h">

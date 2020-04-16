@@ -3,7 +3,6 @@
 #include "Vector.h"
 #include "GameObject.h"
 #include <vector>
-#include "Debugger.h"
 
 using namespace std;
 
@@ -12,6 +11,18 @@ enum MovementMode
 	ConstantVelocity = 0,
 	ConstantAcceleration,
 	DynamicAcceleration
+};
+
+enum ObjectType
+{
+	DYNAMIC = 0,
+	STATIC
+};
+
+struct BoundingBox
+{
+	Vector UpperBound;
+	Vector LowerBound;
 };
 
 class ParticleModel
@@ -25,16 +36,19 @@ class ParticleModel
 	vector<Vector> forces;
 	float mass = 1.0f;
 	float dragCoefficient = 1.05;
+	ObjectType type = DYNAMIC;
+	bool Grounded = false;
 
-	const float GroundThreshold = 0.0f;
-
-	Debugger debugger;
+	BoundingBox bb;
 
 public:
 	ParticleModel(GameObject* Object);
 	~ParticleModel();
 
 	void Update(float t);
+
+	void SetGrounded(bool g) { Grounded = g; }
+	bool GetGrounded() { return Grounded; }
 
 	void MoveConstantVelocity(float t);
 	void MoveConstantAcceleration(float t);
@@ -43,11 +57,19 @@ public:
 	void UpdateAcceleration();
 	void Move(float t);
 
+	ObjectType GetObjectType() { return type; }
+	void SetObjectType(ObjectType t) { type = t; }
+
+	GameObject* GetGameObject() { return _object; }
+
 	void AddForce(Vector f) { forces.push_back(f); }
 
 	Vector CalculateDrag();
 	Vector LaminarDrag();
 	Vector TurbulentDrag();
+
+	void UpdateBoundingBox();
+	BoundingBox GetBoundingBox() { return bb; }
 
 	float GetMass() { return mass; }
 
@@ -56,8 +78,8 @@ public:
 	void SetAcceleration(Vector v) { _acceleration = v; }
 	void SetVelocity(Vector v) { _velocity = v; }
 
-	Vector ResolveCollisions();
+	//Vector ResolveCollisions();
 
-	bool CollisionCheck(GameObject* otherObject);
+	//bool CollisionCheck(GameObject* otherObject);
 };
 

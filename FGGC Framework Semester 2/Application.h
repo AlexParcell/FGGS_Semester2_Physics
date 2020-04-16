@@ -25,7 +25,7 @@
 */
 #include "GameObject.h"
 
-#define NUMBER_OF_CUBES 5
+#define NUMBER_OF_CUBES 3
 
 using namespace DirectX;
 

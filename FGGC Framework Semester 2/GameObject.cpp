@@ -14,10 +14,11 @@ GameObject::GameObject(string type, Geometry geometry, Material material, Vector
 	_appearance->_material = material;
 	_appearance->_textureRV = nullptr;
 	_debugger = new Debugger();
-
-	if (type == "Cube")
+	
+	_particleModel = new ParticleModel(this);
+	if (type == "Floor")
 	{
-		_particleModel = new ParticleModel(this);
+		_particleModel->SetObjectType(ObjectType::STATIC);
 	}
 }
 
@@ -35,10 +36,7 @@ void GameObject::Update(float t)
 	XMMATRIX rotation = XMMatrixRotationX(_transform->_rotation.X) * XMMatrixRotationY(_transform->_rotation.Y) * XMMatrixRotationZ(_transform->_rotation.Z);
 	XMMATRIX translation = XMMatrixTranslation(_transform->_position.X, _transform->_position.Y, _transform->_position.Z);
 
-	if (_type.find("Cube") != string::npos)
-	{
-		_particleModel->Update(t);
-	}
+	_particleModel->Update(t);
 
 	XMStoreFloat4x4(&_world, scale * rotation * translation);
 
