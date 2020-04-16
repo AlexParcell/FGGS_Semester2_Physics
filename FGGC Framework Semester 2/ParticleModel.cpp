@@ -24,7 +24,7 @@ void ParticleModel::Update(float t)
 		{
 		if (type == DYNAMIC)
 		{
-			//AddForce(CalculateDrag());
+			AddForce(CalculateDrag());
 			AddForce(Vector(0, -10, 0));
 			UpdateNetForce();
 			UpdateAcceleration();
@@ -55,12 +55,10 @@ void ParticleModel::UpdateNetForce()
 		_netForce += forces[i];
 	}
 	forces.clear();
-	Debugger::GetInstance()->PrintVector("f: ", _netForce);
 }
 void ParticleModel::UpdateAcceleration()
 {
 	_acceleration = _netForce / mass;
-	Debugger::GetInstance()->PrintVector("a: ", _acceleration);
 }
 void ParticleModel::Move(float t)
 {
@@ -68,8 +66,6 @@ void ParticleModel::Move(float t)
 
 	Vector newPosition = _object->GetTransform()->GetPosition() + (_velocity * t);
 	_object->GetTransform()->SetPosition(newPosition);
-
-	Debugger::GetInstance()->PrintVector("v: ", _velocity);
 
 	_netForce = Vector(0.0f, 0.0f, 0.0f);
 }

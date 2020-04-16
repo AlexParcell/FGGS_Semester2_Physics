@@ -9,6 +9,8 @@ struct Contact
 	ParticleModel* B;
 	bool Collided = false;
 	float deltaTime = 0.0f;
+	Vector hitNormal;
+	float depth;
 };
 
 
