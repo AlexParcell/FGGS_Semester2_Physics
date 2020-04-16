@@ -8,6 +8,7 @@
 #include "DDSTextureLoader.h"
 #include "resource.h"
 #include "Camera.h"
+#include "OBJLoader.h"
 
 #include <vector>
 /*
@@ -28,13 +29,6 @@
 #define NUMBER_OF_CUBES 3
 
 using namespace DirectX;
-
-struct SimpleVertex
-{
-    XMFLOAT3 PosL;
-	XMFLOAT3 NormL;
-	XMFLOAT2 Tex;
-};
 
 struct SurfaceInfo
 {

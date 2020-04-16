@@ -152,9 +152,17 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
 	_gameObjects.push_back(gameObject);
 
+	MeshData mesh = OBJLoader::Load("sphere.obj", _pd3dDevice);
+	Geometry sphereGeometry;
+	sphereGeometry.indexBuffer = mesh.IndexBuffer;
+	sphereGeometry.vertexBuffer = mesh.VertexBuffer;
+	sphereGeometry.numberOfIndices = mesh.IndexCount;
+	sphereGeometry.vertexBufferOffset = mesh.VBOffset;
+	sphereGeometry.vertexBufferStride = mesh.VBStride;
+
 	for (auto i = 0; i < NUMBER_OF_CUBES; i++)
 	{
-		gameObject = new GameObject("Cube", cubeGeometry, shinyMaterial, Vector(0.5f, 0.5f, 0.5f));
+		gameObject = new GameObject("Cube", sphereGeometry, shinyMaterial, Vector(0.5f, 0.5f, 0.5f));
 		gameObject->GetTransform()->SetScale(Vector(0.5f, 0.5f, 0.5f));
 		gameObject->GetTransform()->SetPosition(Vector(-3.0f + (i * 2.0f), 2.0f, 10.0f));
 		gameObject->GetAppearance()->SetTextureRV(_pTextureRV);
