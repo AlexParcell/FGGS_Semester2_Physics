@@ -83,6 +83,16 @@ public:
 		};
 	}
 
+	Vector operator*(Vector V)
+	{
+		return Vector
+		{
+			X * V.X,
+			Y * V.Y,
+			Z * V.Z
+		};
+	}
+
 	void operator*=(float N)
 	{
 		X *= N;

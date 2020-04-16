@@ -77,12 +77,15 @@ void CollisionHandler::ResolveCollision(Contact collision)
 {
 	ParticleModel* a = collision.A;
 	ParticleModel* b = collision.B;
-	Vector aPos = a->GetGameObject()->GetTransform()->GetPosition();
-	Vector bPos = b->GetGameObject()->GetTransform()->GetPosition();
+	Transform* aTransform = a->GetGameObject()->GetTransform();
+	Transform* bTransform = b->GetGameObject()->GetTransform();
 
 	if (b->GetObjectType() == STATIC)
 	{
 		a->AddForce(Vector(0, 10.0f, 0));
+		Vector apos = aTransform->GetPosition();
+		aTransform->SetPosition(apos - (collision.hitNormal * collision.depth));
+
 		Vector av = a->GetVelocity();
 		av.Y = 0;
 		a->SetVelocity(av);
@@ -93,11 +96,13 @@ void CollisionHandler::ResolveCollision(Contact collision)
 	}
 	else
 	{
-		//a->GetGameObject()->GetTransform()->RevertPosition();
+		Vector apos = aTransform->GetPosition();
+		aTransform->SetPosition(apos - (collision.hitNormal * collision.depth));
 		Vector av = (a->GetVelocity() * a->GetMass() + b->GetVelocity() * b->GetMass() + (b->GetVelocity() - a->GetVelocity()) * b->GetMass() * 0.5) / (a->GetMass() + b->GetMass());
 		Debugger::GetInstance()->PrintVector("COLLISION NORMAL: ", collision.hitNormal);
 
-		//b->GetGameObject()->GetTransform()->RevertPosition();
+		Vector bpos = bTransform->GetPosition();
+		bTransform->SetPosition(bpos + (collision.hitNormal * collision.depth));
 		Vector bv = (a->GetVelocity() * a->GetMass() + b->GetVelocity() * b->GetMass() + (b->GetVelocity() - a->GetVelocity()) * a->GetMass() * 0.5) / (a->GetMass() + b->GetMass());
 
 		a->SetVelocity(av);
