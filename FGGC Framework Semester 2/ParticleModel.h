@@ -38,7 +38,7 @@ class ParticleModel
 	float dragCoefficient = 1.05;
 	ObjectType type = DYNAMIC;
 	bool Grounded = false;
-
+	float MaxSpeed = 10.0f;
 	BoundingBox bb;
 
 public:

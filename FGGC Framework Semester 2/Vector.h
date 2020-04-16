@@ -105,6 +105,20 @@ public:
 		Z *= N;
 	}
 
+	Vector Truncate(float Max)
+	{
+		Vector v = GetNormalizedVector();
+		float m = GetMagnitude();
+
+		if (m == 0)
+			return *this;
+
+		if (m < Max)
+			return *this;
+		else
+			return v * Max;
+	}
+
 	Vector operator+(Vector OtherVector)
 	{
 		return Vector(

@@ -50,40 +50,24 @@ void CollisionHandler::ResolveCollision(Contact collision)
 	{
 		Vector apos = aTransform->GetPosition();
 		aTransform->SetPosition(apos - (collision.hitNormal * collision.depth));
-		Vector av = (a->GetVelocity() * a->GetMass() + b->GetVelocity() * b->GetMass() + (b->GetVelocity() - a->GetVelocity()) * b->GetMass() * 0.5) / (a->GetMass() + b->GetMass());
+		Vector av = (a->GetVelocity() * a->GetMass() + b->GetVelocity() * b->GetMass() + (b->GetVelocity() - a->GetVelocity()) * b->GetMass() * 1.5) / (a->GetMass() + b->GetMass());
+		av = av * (collision.hitNormal * -1);
+
 
 		Vector bpos = bTransform->GetPosition();
 		bTransform->SetPosition(bpos + (collision.hitNormal * collision.depth));
-		Vector bv = (a->GetVelocity() * a->GetMass() + b->GetVelocity() * b->GetMass() + (b->GetVelocity() - a->GetVelocity()) * a->GetMass() * 0.5) / (a->GetMass() + b->GetMass());
+		Vector bv = (a->GetVelocity() * a->GetMass() + b->GetVelocity() * b->GetMass() + (b->GetVelocity() - a->GetVelocity()) * a->GetMass() * 1.5) / (a->GetMass() + b->GetMass());
+		bv = bv * collision.hitNormal;
 
 		a->SetVelocity(av);
 		b->SetVelocity(bv);
 	}
 }
-/*
-if (b->GetObjectType() == STATIC)
-{
-	a->AddForce(Vector(0, 10.0f, 0));
-	Vector apos = aTransform->GetPosition();
-	aTransform->SetPosition(apos - (collision.hitNormal * collision.depth));
-
-	Vector av = a->GetVelocity();
-	av.Y = 0;
-	a->SetVelocity(av);
-	Vector aa = a->GetAcceleration();
-	aa.Y = 0;
-	a->SetAcceleration(aa);
-	return;
-}
-else
-*/
 
 void CollisionHandler::ResolveFloor(ParticleModel* a, float FloorHeight)
 {
 	Transform* aTransform = a->GetGameObject()->GetTransform();
 	Vector aPos = aTransform->GetPosition();
-
-
 
 	if (aPos.Y - a->Radius < FloorHeight)
 	{

@@ -162,7 +162,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
 	for (auto i = 0; i < NUMBER_OF_CUBES; i++)
 	{
-		gameObject = new GameObject("Cube", sphereGeometry, shinyMaterial, Vector(0.5f, 0.5f, 0.5f));
+		gameObject = new GameObject("Sphere", sphereGeometry, shinyMaterial, Vector(0.5f, 0.5f, 0.5f));
 		gameObject->GetTransform()->SetScale(Vector(0.5f, 0.5f, 0.5f));
 		gameObject->GetTransform()->SetPosition(Vector(-3.0f + (i * 2.0f), 2.0f, 10.0f));
 		gameObject->GetAppearance()->SetTextureRV(_pTextureRV);
@@ -681,11 +681,11 @@ void Application::Update()
 	// Move gameobject
 	if (GetAsyncKeyState('1') & 0x8000)
 	{
-		object->GetParticleModel()->AddForce(Vector(5.0f, 0.0f, 0.0f));
+		object->GetParticleModel()->AddForce(Vector(10.0f, 0.0f, 0.0f));
 	}
 	if (GetAsyncKeyState('2') & 0x8000)
 	{
-		object->GetParticleModel()->AddForce(Vector(0.0f, 11.0f, 0.0f));
+		object->GetParticleModel()->AddForce(Vector(0.0f, 20.0f, 0.0f));
 	}
 
 
