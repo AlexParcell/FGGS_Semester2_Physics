@@ -70,7 +70,7 @@ void CollisionHandler::ResolveFloor(ParticleModel* a, float FloorHeight)
 
 	if (aPos.Y - a->Radius < FloorHeight)
 	{
-		a->AddForce(Vector(0, 10.0f, 0));
+		a->AddForce(Vector(0, 10.0f * a->GetMass() , 0));
 
 		// difference between position to radius takeaway position to floor height
 		float DistanceToFloor = abs(aPos.Y - FloorHeight);
@@ -84,6 +84,25 @@ void CollisionHandler::ResolveFloor(ParticleModel* a, float FloorHeight)
 		Vector aa = a->GetAcceleration();
 		aa.Y = 0;
 		a->SetAcceleration(aa);
+	}
+}
+
+void CollisionHandler::ResolveFloorAsWater(ParticleModel* a, float FloorHeight)
+{
+	Transform* aTransform = a->GetGameObject()->GetTransform();
+	Vector aPos = aTransform->GetPosition();
+
+	if (aPos.Y - a->Radius < FloorHeight)
+	{
+		// difference between position to radius takeaway position to floor height
+		float DistanceToFloor = abs(aPos.Y - FloorHeight);
+		float Depth = (aPos.Y + a->Radius) - DistanceToFloor;
+		float SphericalCap = (3.14 * pow(Depth, 2.0f)) / 3.0f * (3.0f * (a->Radius - Depth));
+		float FluidDensity = 5;
+
+		Vector Buoyancy = Vector(0, 10 * a->GetMass(), 0) * SphericalCap * FluidDensity;
+
+		a->AddForce(Buoyancy);
 	}
 }
 

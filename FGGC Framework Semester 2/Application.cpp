@@ -678,6 +678,8 @@ void Application::Update()
 
 	GameObject* object = _gameObjects[1];
 
+	static bool BuoyancyOn = false;
+
 	// Move gameobject
 	if (GetAsyncKeyState('W') & 0x8000)
 	{
@@ -698,6 +700,10 @@ void Application::Update()
 	if (GetAsyncKeyState('2') & 0x8000)
 	{
 		object->GetParticleModel()->AddForce(Vector(0.0f, 20.0f, 0.0f));
+	}
+	if (GetAsyncKeyState('1') & 0x8000)
+	{
+		BuoyancyOn = !BuoyancyOn;
 	}
 
 
@@ -729,7 +735,15 @@ void Application::Update()
 				{
 					cHandler->ResolveCollision(c);
 				}
-				cHandler->ResolveFloor(gameObject->GetParticleModel(), 0.0f);
+
+				if (BuoyancyOn)
+				{
+					cHandler->ResolveFloorAsWater(gameObject->GetParticleModel(), 0.0f);
+				}
+				else
+				{
+					cHandler->ResolveFloor(gameObject->GetParticleModel(), 0.0f);
+				}
 				cHandler->ResolveWalls(gameObject->GetParticleModel(), -15.0f, 15.0f, -15.0f, 15.0f);
 			}
 		}

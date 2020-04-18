@@ -25,7 +25,7 @@ void ParticleModel::Update(float t)
 		if (type == DYNAMIC)
 		{
 			AddForce(CalculateDrag());
-			AddForce(Vector(0, -10, 0));
+			AddForce(Vector(0, -10 * mass, 0));
 			UpdateNetForce();
 			UpdateAcceleration();
 			Move(t);
