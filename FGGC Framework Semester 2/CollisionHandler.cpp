@@ -87,6 +87,7 @@ void CollisionHandler::ResolveFloor(ParticleModel* a, float FloorHeight)
 		Vector aa = a->GetAcceleration();
 		aa.Y = 0;
 		a->SetAcceleration(aa);
+		a->AddRotationalImpulse(av, Vector(0, 1, 0));
 	}
 }
 

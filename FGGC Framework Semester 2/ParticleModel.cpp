@@ -66,7 +66,7 @@ void ParticleModel::Move(float t)
 	_velocity += _acceleration * t;
 	_velocity = _velocity.Truncate(MaxSpeed);
 	
-	angularVelocity *= 0.99f;
+	angularVelocity *= 0.5f;
 
 	Vector newPosition = _object->GetTransform()->GetPosition() + (_velocity * t);
 	_object->GetTransform()->SetPosition(newPosition);
