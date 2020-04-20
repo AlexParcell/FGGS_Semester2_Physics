@@ -3,6 +3,7 @@
 #include "Vector.h"
 #include "GameObject.h"
 #include <vector>
+#include "Quaternion.h"
 
 using namespace std;
 
@@ -19,12 +20,6 @@ enum ObjectType
 	STATIC
 };
 
-struct BoundingBox
-{
-	Vector UpperBound;
-	Vector LowerBound;
-};
-
 class ParticleModel
 {
 	Vector _acceleration = Vector(0.0f, 0.0f, 0.0f);
@@ -39,7 +34,8 @@ class ParticleModel
 	ObjectType type = DYNAMIC;
 	bool Grounded = false;
 	float MaxSpeed = 10.0f;
-	BoundingBox bb;
+	Vector angularVelocity;
+	Quaternion quat = Quaternion();
 
 public:
 	ParticleModel(GameObject* Object);
@@ -64,14 +60,17 @@ public:
 
 	GameObject* GetGameObject() { return _object; }
 
+	void AddRotationalImpulse(Vector impulse, Vector normal);
+
 	void AddForce(Vector f) { forces.push_back(f); }
 
 	Vector CalculateDrag();
 	Vector LaminarDrag();
 	Vector TurbulentDrag();
 
-	void UpdateBoundingBox();
-	BoundingBox GetBoundingBox() { return bb; }
+	XMMATRIX GetInverseInertiaTensor();
+
+	XMMATRIX GetAngularOrientation(float deltaTime);
 
 	float GetMass() { return mass; }
 
@@ -79,9 +78,5 @@ public:
 	Vector GetVelocity() { return _velocity; }
 	void SetAcceleration(Vector v) { _acceleration = v; }
 	void SetVelocity(Vector v) { _velocity = v; }
-
-	//Vector ResolveCollisions();
-
-	//bool CollisionCheck(GameObject* otherObject);
 };
 

@@ -38,7 +38,9 @@ void GameObject::Update(float t)
 
 	_particleModel->Update(t);
 
-	XMStoreFloat4x4(&_world, scale * rotation * translation);
+	XMMATRIX angularOrientation = _particleModel->GetAngularOrientation(t);
+
+	XMStoreFloat4x4(&_world, scale * rotation * angularOrientation * translation);
 
 	if (_parent != nullptr)
 	{

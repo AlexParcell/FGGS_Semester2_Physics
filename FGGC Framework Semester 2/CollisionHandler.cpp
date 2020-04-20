@@ -58,7 +58,9 @@ void CollisionHandler::ResolveCollision(Contact collision)
 		Vector bv = (a->GetVelocity() * a->GetMass() + b->GetVelocity() * b->GetMass() + (b->GetVelocity() - a->GetVelocity()) * a->GetMass() * 2.0) / (a->GetMass() + b->GetMass());
 		bv = bv * collision.hitNormal;
 
+		a->AddRotationalImpulse(av, collision.hitNormal);
 		a->SetVelocity(av);
+		b->AddRotationalImpulse(bv, collision.hitNormal);
 		b->SetVelocity(bv);
 	}
 }
@@ -76,6 +78,7 @@ void CollisionHandler::ResolveFloor(ParticleModel* a, float FloorHeight)
 		float DistanceToFloor = abs(aPos.Y - FloorHeight);
 		float Depth = (aPos.Y + a->Radius) - DistanceToFloor;
 
+		//a->AddRotationalImpulse(Vector(0, 10.0f * a->GetMass(), 0), Vector(0, -1, 0));
 		aTransform->SetPosition(Vector(aPos.X, aPos.Y - (aPos.Y - Depth), aPos.Z));
 
 		Vector av = a->GetVelocity();

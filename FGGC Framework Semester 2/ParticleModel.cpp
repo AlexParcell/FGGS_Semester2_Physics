@@ -1,5 +1,6 @@
 #include "ParticleModel.h"
 #include "Debugger.h"
+#include "Quaternion.h"
 
 ParticleModel::ParticleModel(GameObject* Object) : _object(Object)
 {
@@ -64,6 +65,8 @@ void ParticleModel::Move(float t)
 {
 	_velocity += _acceleration * t;
 	_velocity = _velocity.Truncate(MaxSpeed);
+	
+	angularVelocity *= 0.99f;
 
 	Vector newPosition = _object->GetTransform()->GetPosition() + (_velocity * t);
 	_object->GetTransform()->SetPosition(newPosition);
@@ -96,20 +99,61 @@ Vector ParticleModel::TurbulentDrag()
 	return unit * -dragMag;
 }
 
-void ParticleModel::UpdateBoundingBox()
+XMMATRIX ParticleModel::GetInverseInertiaTensor()
 {
-	Vector boxDimensions = _object->GetBoundingBox();
-	Vector position = _object->GetTransform()->GetPosition();
+	XMFLOAT4X4 _tensor;
+	float rSquared = Radius * Radius;
+	float fraction = 2.0f / 5.0f;
+	_tensor._11 = rSquared * mass * fraction;
+	_tensor._22 = rSquared * mass * fraction;
+	_tensor._33 = rSquared * mass * fraction;
+	_tensor._44 = 1.0f;
 
-	bb.LowerBound =	Vector(
-			position.X - boxDimensions.X,
-			position.Y - boxDimensions.Y,
-			position.Z - boxDimensions.Z
-			);
+	_tensor._12 = 0.0f;
+	_tensor._13 = 0.0f;
+	_tensor._14 = 0.0f;
+	_tensor._21 = 0.0f;
+	_tensor._23 = 0.0f;
+	_tensor._24 = 0.0f;
+	_tensor._31 = 0.0f;
+	_tensor._32 = 0.0f;
+	_tensor._34 = 0.0f;
+	_tensor._41 = 0.0f;
+	_tensor._42 = 0.0f;
+	_tensor._43 = 0.0f;
 
-	bb.UpperBound = Vector(
-		position.X + boxDimensions.X,
-		position.Y + boxDimensions.Y,
-		position.Z + boxDimensions.Z
-	);
+	XMMATRIX Tensor = XMLoadFloat4x4(&_tensor);
+
+	XMMATRIX InverseTensor = XMMatrixInverse(nullptr, Tensor);
+
+	return InverseTensor;
+}
+
+void ParticleModel::AddRotationalImpulse(Vector impulse, Vector normal)
+{
+	Vector point = normal * Radius;
+	Vector torque = point.GetCrossProduct(impulse);
+
+	XMVECTOR _accel = XMVector3Transform(XMLoadFloat3(&(torque.GetFormattedVector())), GetInverseInertiaTensor());
+	XMFLOAT4X4 tensor; 
+	XMMATRIX _tensor = GetInverseInertiaTensor();
+	XMStoreFloat4x4(&tensor, _tensor);
+
+	Vector acceleration;
+	acceleration.X = torque.X * tensor._11;
+	acceleration.Y = torque.Y * tensor._22;
+	acceleration.Z = torque.Z * tensor._33;
+
+	angularVelocity += acceleration;
+}
+
+XMMATRIX ParticleModel::GetAngularOrientation(float deltaTime)
+{
+	quat.addScaledVector(angularVelocity, deltaTime);
+	quat.normalise();
+
+	XMMATRIX matrix;
+	CalculateTransformMatrixRowMajor(matrix, Vector(0.0f, 0.0f, 0.0f), quat);
+
+	return matrix;
 }
