@@ -25,6 +25,7 @@
     <ClInclude Include="ParticleModel.h" />
     <ClInclude Include="CollisionHandler.h" />
     <ClInclude Include="OBJLoader.h" />
+    <ClInclude Include="Quaternion.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />

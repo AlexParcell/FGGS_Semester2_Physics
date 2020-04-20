@@ -2,6 +2,7 @@
 #include "Vector.h"
 #include "ParticleModel.h"
 #include "CollisionHandler.h"
+#include "Quaternion.h"
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -696,6 +697,12 @@ void Application::Update()
 	if (GetAsyncKeyState('D') & 0x8000)
 	{
 		object->GetParticleModel()->AddForce(Vector(10.0f, 0.0f, 0.0f));
+	}
+	if (GetAsyncKeyState('3') & 0x8000)
+	{
+		Vector Rotation = object->GetTransform()->GetRotation();
+		Rotation.Z += 0.1;
+		object->GetTransform()->SetRotation(Rotation);
 	}
 	if (GetAsyncKeyState('2') & 0x8000)
 	{
