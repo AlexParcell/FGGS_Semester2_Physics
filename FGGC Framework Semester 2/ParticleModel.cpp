@@ -41,6 +41,7 @@ void ParticleModel::MoveConstantVelocity(float t)
 	Vector newPosition = _object->GetTransform()->GetPosition() + (_velocity * t);
 	_object->GetTransform()->SetPosition(newPosition);
 }
+
 void ParticleModel::MoveConstantAcceleration(float t)
 {
 	Vector newPosition = _object->GetTransform()->GetPosition() + (_velocity * t) + (_acceleration * 0.5 * t * t);
@@ -134,7 +135,6 @@ void ParticleModel::AddRotationalImpulse(Vector impulse, Vector normal)
 	Vector point = normal * Radius;
 	Vector torque = point.GetCrossProduct(impulse);
 
-	XMVECTOR _accel = XMVector3Transform(XMLoadFloat3(&(torque.GetFormattedVector())), GetInverseInertiaTensor());
 	XMFLOAT4X4 tensor; 
 	XMMATRIX _tensor = GetInverseInertiaTensor();
 	XMStoreFloat4x4(&tensor, _tensor);

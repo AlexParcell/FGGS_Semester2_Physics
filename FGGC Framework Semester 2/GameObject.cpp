@@ -1,7 +1,7 @@
 #include "GameObject.h"
 #include "ParticleModel.h"
 
-GameObject::GameObject(string type, Geometry geometry, Material material, Vector boundingBox) : _type(type), BoundingBox(boundingBox)
+GameObject::GameObject(string type, Geometry geometry, Material material) : _type(type)
 {
 	_parent = nullptr;
 	_transform = new Transform();

@@ -30,10 +30,8 @@ Contact CollisionHandler::CheckCollision(ParticleModel* a, ParticleModel* b, flo
 		return contact;
 	}
 
-	Vector n = d.GetNormalizedVector();
-
 	contact.Collided = true;
-	contact.hitNormal = d;
+	contact.hitNormal = d.GetNormalizedVector();
 	contact.depth = fabsf(d.GetMagnitude() - r) * 0.5f;
 
 	return contact;
@@ -78,7 +76,6 @@ void CollisionHandler::ResolveFloor(ParticleModel* a, float FloorHeight)
 		float DistanceToFloor = abs(aPos.Y - FloorHeight);
 		float Depth = (aPos.Y + a->Radius) - DistanceToFloor;
 
-		//a->AddRotationalImpulse(Vector(0, 10.0f * a->GetMass(), 0), Vector(0, -1, 0));
 		aTransform->SetPosition(Vector(aPos.X, aPos.Y - (aPos.Y - Depth), aPos.Z));
 
 		Vector av = a->GetVelocity();
@@ -117,7 +114,6 @@ void CollisionHandler::ResolveWalls(ParticleModel* a, float minX, float maxX, fl
 
 	if (aPos.X - a->Radius < minX)
 	{
-		// difference between position to radius takeaway position to floor height
 		float DistanceToWall = abs(aPos.X - minX);
 		float Depth = (aPos.X + a->Radius) - DistanceToWall;
 
@@ -133,7 +129,6 @@ void CollisionHandler::ResolveWalls(ParticleModel* a, float minX, float maxX, fl
 
 	if (aPos.X + a->Radius > maxX)
 	{
-		// difference between position to radius takeaway position to floor height
 		float DistanceToWall = abs(aPos.X - maxX);
 		float Depth = (aPos.X + a->Radius) - DistanceToWall;
 
@@ -149,7 +144,6 @@ void CollisionHandler::ResolveWalls(ParticleModel* a, float minX, float maxX, fl
 
 	if (aPos.Z - a->Radius < minZ)
 	{
-		// difference between position to radius takeaway position to floor height
 		float DistanceToWall = abs(aPos.Z - minZ);
 		float Depth = (aPos.Z + a->Radius) - DistanceToWall;
 
@@ -165,7 +159,6 @@ void CollisionHandler::ResolveWalls(ParticleModel* a, float minX, float maxX, fl
 
 	if (aPos.Z + a->Radius > maxZ)
 	{
-		// difference between position to radius takeaway position to floor height
 		float DistanceToWall = abs(aPos.Z - maxZ);
 		float Depth = (aPos.Z + a->Radius) - DistanceToWall;
 

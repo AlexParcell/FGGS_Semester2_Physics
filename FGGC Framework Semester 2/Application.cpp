@@ -145,7 +145,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 	noSpecMaterial.specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	noSpecMaterial.specularPower = 0.0f;
 	
-	GameObject * gameObject = new GameObject("Floor", planeGeometry, noSpecMaterial, Vector(15.0f, 0.025f, 15.0f));
+	GameObject * gameObject = new GameObject("Floor", planeGeometry, noSpecMaterial);
 	gameObject->GetTransform()->SetPosition(Vector(0.0f, 0.0f, 0.0f));
 	gameObject->GetTransform()->SetScale(Vector(15.0f, 15.0f, 15.0f));
 	gameObject->GetTransform()->SetRotation(Vector(XMConvertToRadians(90.0f), 0.0f, 0.0f));
@@ -163,7 +163,7 @@ HRESULT Application::Initialise(HINSTANCE hInstance, int nCmdShow)
 
 	for (auto i = 0; i < NUMBER_OF_CUBES; i++)
 	{
-		gameObject = new GameObject("Sphere", sphereGeometry, shinyMaterial, Vector(0.5f, 0.5f, 0.5f));
+		gameObject = new GameObject("Sphere", sphereGeometry, shinyMaterial);
 		gameObject->GetTransform()->SetScale(Vector(0.5f, 0.5f, 0.5f));
 		gameObject->GetTransform()->SetPosition(Vector(-3.0f + (i * 2.0f), 2.0f, 10.0f));
 		gameObject->GetAppearance()->SetTextureRV(_pTextureRV);
